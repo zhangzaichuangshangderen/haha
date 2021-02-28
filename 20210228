@@ -106,7 +106,3 @@ CAS 的缺点是什么，怎么解决 ABA 问题
 合并k个升序链表
 两个栈实现队列
 
-作者：陈乐乐
-链接：https://leetcode-cn.com/circle/discuss/HHZBlM/
-来源：力扣（LeetCode）
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
