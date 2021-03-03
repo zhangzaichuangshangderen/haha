@@ -1,0 +1,122 @@
+1.函数返回值问题：
+
+在函数有多个返回值时，只要有⼀个返回值有名 称，那么其他返回值也⼀定要有名称
+
+2.结构体的⽐较问题 ：
+
+结构体⽐较规则之⼀: 只有相同的类型的结构体才可以⽐较(1 结构体的属性类型， 2 属性的顺序)
+
+结构体⽐较规则之⼆: 即使两个结构体的属性类型和顺序相同，但是⾥⾯存在不可⽐较类型，依然是不可以直接==⽐较的。 ⽐如 map，slice 可以参考⽤reflect.DeepEqual⽅法来进⾏⽐较
+
+3.string与nil类型的问题
+
+nil空值的赋值
+
+空值， 空指针，所有Golang中的引⽤类型都可以⽤nil进⾏赋值 引⽤类型: interface , function, pointer, map, slice, channel.
+
+string: 如果表示⼀个string的空值， ⽤空字符串来表示 ""
+
+不能够将nil赋值给⼀个string类型
+
+4.常量的问题
+
+数据类型的本质 固定内存⼤⼩的别名
+
+数据类型的作⽤ 编译器预算对象或变量分配内存空间的⼤⼩
+
+内存四区：
+
+（1）栈区
+
+空间较⼩，要求数据读写性能⾼，数据存放时间较短暂。由编译器⾃动分配和释 放，存放函数的参数值、函数的调⽤流程⽅法地址、局部变量等(局部变量如果 产⽣逃逸现象，可能会挂在在堆区)
+
+（2）堆区
+
+空间充裕，数据存放时间较久。⼀般由开发者分配及释放(但是Golang中会根据 变量的逃逸现象来选择是否分配到栈上或堆上)，启动Golang的GC由GC清除机 制⾃动回收。
+
+（3）全局区
+
+静态全局变量区 全局变量的开辟是在程序在main之前就已经放在内存中。⽽且对 外完全可⻅。即作⽤域在全部代码中，任何同包代码均可随时使 ⽤，在变量会搞混淆，⽽且在局部函数中如果同名称变量使⽤:=赋 值会出现编译错误。
+
+常量区 常量区也归属于全局区，常量为存放数值字⾯值单位，即不 可修改。或者说的有的常量是直接挂钩字⾯值的。 const cl = 10 cl是字⾯量10的对等符号。
+
+（4）代码区
+
+存放代码逻辑的内存
+
+数组与切⽚
+（1）切⽚的初始化和追加：
+
+slice在经过make初始化，默认的数据的值是0，append 是动态额外开辟内存。
+
+（2）slice拼接问题：
+
+两个slice在append的时候，记住需要进⾏将第⼆个slice进⾏...打散再拼接。s1 = append(s1, s2...)
+
+（3）slice中new的使⽤问题
+
+make只⽤于slice、map以及channel的初始化（⾮零值）；make返回的还是这三个引⽤类型本身； ⽽new⽤于类型的内存分配，并且内存置为零；⽽new返回的是指向类型的指针。
+
+不建议⽤new来开辟slice ， map 和 channel
+
+Map
+（1）map的value赋值问题
+
+定义map不推荐 map[string]Student map的value student⾥的属性是不可以修改的
+
+推荐 map[string]*Student map的value student的属性是可以修改的
+
+（2）map遍历问题
+
+遍历map 不推荐 //将数组依次添加到map中 for _, stu := range stus { m[stu.Name] = &stu } //遍历map的时候，不要采⽤range的⽅式来遍历
+
+推荐 //遍历整个slice数组，⼀次赋值给map for i := 0; i < len(stus); i++ { m[stus[i].Name] = &stus[i] }
+
+interface
+（1）interface的赋值
+
+多态的三要素 1、有interface接⼝，并且有接⼝定义的⽅法。 2、有⼦类去重写interface的接⼝。 3、有⽗类指针指向⼦类的具体对象
+
+如果People是⼀个interface类型 var peo People = Stduent{} 错误的
+
+var peo People = &Student{} 正确的
+
+（2）interface的内部构造
+
+image
+空接口:
+
+image
+image
+非空接口：
+
+image
+image
+（3）interface{} 和 *interface{}
+
+*interface{}本身不是万能指针， 就是eface结构体的地址。
+
+如果以interface{}作为形参，那么他只能够接收interface{}类型的实参
+
+channel
+channel出现的特殊情况总结
+
+▪ 给⼀个 nil channel 发送数据，造成永远阻塞
+
+▪ 从⼀个 nil channel 接收数据，造成永远阻塞
+
+▪ 给⼀个已经关闭的 channel 发送数据，引起 panic
+
+▪ 从⼀个已经关闭的 channel 接收数据，如果缓冲区中为空，则返回⼀个零值
+
+▪ ⽆缓冲的channel是同步的，⽽有缓冲的channel是⾮同步的
+
+15字⼝诀: 空(nil)读写阻塞，写关闭异常，读关闭空零
+
+WaitGroup
+
+
+作者：余生社会
+链接：https://www.jianshu.com/p/72c1f29d4566
+来源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
